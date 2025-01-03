@@ -1,8 +1,8 @@
 import { Box } from "@mui/material";
 import MonthlySummary from "../components/MonthlySummary";
 import Calender from "../components/Calender";
-import TransactionForm from "../components/TransactionForm";
 import TransactionMenu from "../components/TransactionMenu";
+import TransactionForm from "../components/TransactionForm";
 import { Transaction } from "../types";
 import { useState } from "react";
 import { format } from "date-fns";
@@ -14,13 +14,22 @@ interface HomeProps {
 
 const Home = ({ monthlyTransactions, setCurrentMonth }: HomeProps) => {
   const today = format(new Date(), "yyyy-MM-dd");
-  // console.log(today);
   const [currentDay, setCurrentDay] = useState(today);
+  const [isEntryDrawerOpen, setIsEntryDrawerOpen] = useState(false);
 
   const dailyTransactions = monthlyTransactions.filter((transaction) => {
     return transaction.date === currentDay;
   });
-  console.log("dailyTransactions", dailyTransactions);
+  // console.log("dailyTransactions", dailyTransactions);
+
+  const closeForm = () => {
+    setIsEntryDrawerOpen(!isEntryDrawerOpen);
+  };
+
+  // フォームの開閉処理
+  const handleAddTransactionFrom = () => {
+    setIsEntryDrawerOpen(!isEntryDrawerOpen);
+  };
   return (
     <Box sx={{ display: "flex" }}>
       {/* left side */}
@@ -39,8 +48,13 @@ const Home = ({ monthlyTransactions, setCurrentMonth }: HomeProps) => {
         <TransactionMenu
           dailyTransactions={dailyTransactions}
           currentDay={currentDay}
+          onAddTransactionFrom={handleAddTransactionFrom}
         />
-        <TransactionForm />
+        <TransactionForm
+          onCloseForm={closeForm}
+          isEntryDrawerOpen={isEntryDrawerOpen}
+          currentDay={currentDay}
+        />
       </Box>
     </Box>
   );
