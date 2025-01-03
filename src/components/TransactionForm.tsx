@@ -22,6 +22,8 @@ import AddBusinessIcon from "@mui/icons-material/AddBusiness";
 import { Controller, useForm } from "react-hook-form";
 import { useEffect, useState } from "react";
 import { ExpenseCategory, IncomeCategory } from "../types";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { transactionSchema } from "../validation/schema";
 
 interface TransactionFormProps {
   onCloseForm: () => void;
@@ -61,7 +63,13 @@ const TransactionForm = ({
 
   const [categories, setCategories] = useState(expenseCategories);
 
-  const { control, setValue, watch } = useForm({
+  const {
+    control,
+    setValue,
+    watch,
+    formState: { errors },
+    handleSubmit,
+  } = useForm({
     defaultValues: {
       type: "expense",
       date: currentDay,
@@ -69,7 +77,12 @@ const TransactionForm = ({
       category: "",
       content: "",
     },
+    resolver: zodResolver(transactionSchema),
   });
+
+  // console.log("errors", errors);
+
+  // 収支タイプを切り替える関数
   const incomeExpenseToggle = (type: IncomeExpense) => {
     setValue("type", type);
   };
@@ -80,7 +93,7 @@ const TransactionForm = ({
 
   // 収支タイプを監視
   const currentType = watch("type");
-  console.log("currentType", currentType);
+  // console.log("currentType", currentType);
 
   //収支タイプに応じたカテゴリを取得
   useEffect(() => {
@@ -88,6 +101,10 @@ const TransactionForm = ({
       currentType === "expense" ? expenseCategories : incomeCategories;
     setCategories(newCategories);
   }, [currentType]);
+
+  const onSubmit = (data: any) => {
+    console.log(data);
+  };
 
   return (
     <Box
@@ -123,14 +140,14 @@ const TransactionForm = ({
         </IconButton>
       </Box>
       {/* フォーム要素 */}
-      <Box component={"form"}>
+      <Box component={"form"} onSubmit={handleSubmit(onSubmit)}>
         <Stack spacing={2}>
           {/* 収支切り替えボタン */}
           <Controller
             name="type"
             control={control}
             render={({ field }) => {
-              console.log("field", field);
+              // console.log("field", field);
               return (
                 <ButtonGroup fullWidth>
                   <Button
@@ -167,6 +184,8 @@ const TransactionForm = ({
                 InputLabelProps={{
                   shrink: true,
                 }}
+                error={!!errors.date}
+                helperText={errors.date?.message}
               />
             )}
           />
@@ -175,9 +194,16 @@ const TransactionForm = ({
             name="category"
             control={control}
             render={({ field }) => (
-              <TextField {...field} id="カテゴリ" label="カテゴリ" select>
-                {categories.map((category) => (
-                  <MenuItem value={category.label}>
+              <TextField
+                error={!!errors.category}
+                helperText={errors.category?.message}
+                {...field}
+                id="カテゴリ"
+                label="カテゴリ"
+                select
+              >
+                {categories.map((category, index) => (
+                  <MenuItem value={category.label} key={index}>
                     <ListItemIcon>{category.icon}</ListItemIcon>
                     {category.label}
                   </MenuItem>
@@ -191,9 +217,11 @@ const TransactionForm = ({
             name="amount"
             control={control}
             render={({ field }) => {
-              console.log("amount field", field);
+              // console.log("amount field", field);
               return (
                 <TextField
+                  error={!!errors.amount}
+                  helperText={errors.amount?.message}
                   {...field}
                   value={field.value === 0 ? "" : field.value}
                   onChange={(e) => {
@@ -211,7 +239,13 @@ const TransactionForm = ({
             name="content"
             control={control}
             render={({ field }) => (
-              <TextField {...field} label="内容" type="text" />
+              <TextField
+                error={!!errors.content}
+                helperText={errors.content?.message}
+                {...field}
+                label="内容"
+                type="text"
+              />
             )}
           />
           {/* 保存ボタン */}

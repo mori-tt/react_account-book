@@ -10,7 +10,7 @@ interface MonthlySummaryProps {
 }
 
 const MonthlySummary = ({ monthlyTransactions }: MonthlySummaryProps) => {
-  console.log("monthlyTransactions", monthlyTransactions);
+  // console.log("monthlyTransactions", monthlyTransactions);
   const { income, expense, balance } = financeCalculations(monthlyTransactions);
   // console.log(income, expense, balance);
   return (

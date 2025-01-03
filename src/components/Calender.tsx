@@ -53,7 +53,7 @@ const Calender = ({
     backgroundColor: theme.palette.incomeColor.light,
   };
 
-  console.log("calendarEvents", [...calendarEvents, backgroundEvent]);
+  // console.log("calendarEvents", [...calendarEvents, backgroundEvent]);
 
   const renderEventContent = (eventInfo: EventContentArg) => {
     // console.log(eventInfo);
