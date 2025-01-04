@@ -35,6 +35,10 @@ interface TransactionFormProps {
   setSelectedTransaction: React.Dispatch<
     React.SetStateAction<Transaction | null>
   >;
+  onUpdateTransaction: (
+    transaction: Schema,
+    transactionId: string
+  ) => Promise<void>;
 }
 
 type IncomeExpense = "income" | "expense";
@@ -52,6 +56,7 @@ const TransactionForm = ({
   selectedTransaction,
   onDeleteTransaction,
   setSelectedTransaction,
+  onUpdateTransaction,
 }: TransactionFormProps) => {
   const formWidth = 320;
 
@@ -116,24 +121,52 @@ const TransactionForm = ({
 
   // 送信処理
   const onSubmit: SubmitHandler<Schema> = (data) => {
-    console.log(data);
-    onSaveTransaction(data);
+    // console.log(data);
+
+    if (selectedTransaction) {
+      onUpdateTransaction(data, selectedTransaction.id)
+        .then(() => {
+          // console.log("更新しました");
+          setSelectedTransaction(null);
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+    } else {
+      onSaveTransaction(data)
+        .then(() => {
+          console.log("保存しました");
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+    }
 
     reset({
       type: "expense",
       date: currentDay,
       amount: 0,
-      category: "",
+      category: "食費",
       content: "",
     });
   };
 
   useEffect(() => {
+    // 選択肢が更新されたか確認
+    if (selectedTransaction) {
+      const categoryExists = categories.some(
+        (category) => category.label === selectedTransaction.category
+      );
+      setValue("category", categoryExists ? selectedTransaction.category : "");
+    }
+  }, [selectedTransaction, categories]);
+
+  // フォーム内容を更新
+  useEffect(() => {
     if (selectedTransaction) {
       setValue("type", selectedTransaction.type);
       setValue("date", selectedTransaction.date);
       setValue("amount", selectedTransaction.amount);
-      setValue("category", selectedTransaction.category);
       setValue("content", selectedTransaction.content);
     } else {
       reset({
@@ -302,7 +335,7 @@ const TransactionForm = ({
             color={currentType === "income" ? "primary" : "error"}
             fullWidth
           >
-            保存
+            {selectedTransaction ? "更新" : "保存"}
           </Button>
           {/* 削除ボタン */}
           {selectedTransaction && (
