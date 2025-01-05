@@ -27,7 +27,7 @@ const Calender = ({
 }: CalenderProps) => {
   const theme = useTheme();
   const dailyBalances = calculationDailyBalances(monthlyTransactions);
-  // console.log(dailyBalances);
+  // console.log("dailyBalances", dailyBalances);
 
   // FullCalendar用のイベントを生成する関数
   const createCalendarEvents = (

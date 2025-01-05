@@ -31,6 +31,7 @@ function App() {
 
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [currentMonth, setCurrentMonth] = useState(new Date());
+  const [isLoading, setIsLoading] = useState(true);
 
   // firestoreのデータを全て取得
   useEffect(() => {
@@ -55,10 +56,15 @@ function App() {
         } else {
           console.error("一般的なエラーは: ", err);
         }
+      } finally {
+        setIsLoading(false);
       }
     };
     fetchTransactions();
   }, []);
+
+  console.log("transactions", transactions);
+  console.log("isLoading", isLoading);
 
   // ひと月分のデータを取得
   const monthlyTransactions = transactions.filter((transaction) => {
@@ -159,6 +165,8 @@ function App() {
                 <Report
                   currentMonth={currentMonth}
                   setCurrentMonth={setCurrentMonth}
+                  monthlyTransactions={monthlyTransactions}
+                  isLoading={isLoading}
                 />
               }
             />
