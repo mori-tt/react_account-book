@@ -63,8 +63,8 @@ function App() {
     fetchTransactions();
   }, []);
 
-  console.log("transactions", transactions);
-  console.log("isLoading", isLoading);
+  // console.log("transactions", transactions);
+  // console.log("isLoading", isLoading);
 
   // ひと月分のデータを取得
   const monthlyTransactions = transactions.filter((transaction) => {
@@ -74,7 +74,7 @@ function App() {
 
   // 取引を保存する処理
   const handleSaveTransaction = async (transaction: Schema) => {
-    console.log("transaction", transaction);
+    // console.log("transaction", transaction);
 
     try {
       //firestoreにデータを保存
@@ -86,7 +86,7 @@ function App() {
         id: docRef.id,
         ...transaction,
       } as Transaction;
-      console.log("newTransaction", newTransaction);
+      // console.log("newTransaction", newTransaction);
       setTransactions((prevTransaction) => [
         ...prevTransaction,
         newTransaction,

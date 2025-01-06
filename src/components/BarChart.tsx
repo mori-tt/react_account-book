@@ -44,16 +44,16 @@ const BarChart = ({ monthlyTransactions, isLoading }: BarChartProps) => {
   };
 
   const dailyBalances = calculationDailyBalances(monthlyTransactions);
-  console.log("dailyBalances", dailyBalances);
-  console.log("monthlyTransactions", monthlyTransactions);
+  // console.log("dailyBalances", dailyBalances);
+  // console.log("monthlyTransactions", monthlyTransactions);
 
   const dateLabels = Object.keys(dailyBalances).sort();
-  console.log("dateLabels", dateLabels);
+  // console.log("dateLabels", dateLabels);
 
   const expenseData = dateLabels.map((day) => dailyBalances[day].expense);
   const incomeData = dateLabels.map((day) => dailyBalances[day].income);
-  console.log("expenseData", expenseData);
-  console.log("incomeData", incomeData);
+  // console.log("expenseData", expenseData);
+  // console.log("incomeData", incomeData);
 
   const data: ChartData<"bar"> = {
     labels: dateLabels,

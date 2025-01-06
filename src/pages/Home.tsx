@@ -53,7 +53,7 @@ const Home = ({
 
   // 取引が選択された時の処理
   const handleSelectTransaction = (transaction: Transaction) => {
-    console.log("transaction", transaction);
+    // console.log("transaction", transaction);
     setIsEntryDrawerOpen(true);
     setSelectedTransaction(transaction);
   };
