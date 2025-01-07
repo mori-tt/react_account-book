@@ -9,10 +9,12 @@ import { calculationDailyBalances } from "../utils/financeCalculations";
 import { formatCurrency } from "../utils/formatting";
 import interactionPlugin, { DateClickArg } from "@fullcalendar/interaction";
 import { useTheme } from "@mui/material";
+import useMonthlyTransactions from "../hooks/useMonthlyTransactions";
+import { useAppContext } from "../context/AppContext";
 
 interface CalenderProps {
-  monthlyTransactions: Transaction[];
-  setCurrentMonth: React.Dispatch<React.SetStateAction<Date>>;
+  // monthlyTransactions: Transaction[];
+  // setCurrentMonth: React.Dispatch<React.SetStateAction<Date>>;
   setCurrentDay: React.Dispatch<React.SetStateAction<string>>;
   currentDay: string;
   today: string;
@@ -20,13 +22,15 @@ interface CalenderProps {
 }
 
 const Calender = ({
-  monthlyTransactions,
-  setCurrentMonth,
+  // monthlyTransactions,
+  // setCurrentMonth,
   setCurrentDay,
   currentDay,
   today,
   onDateClick,
 }: CalenderProps) => {
+  const monthlyTransactions = useMonthlyTransactions();
+  const { setCurrentMonth } = useAppContext();
   const theme = useTheme();
   const dailyBalances = calculationDailyBalances(monthlyTransactions);
   // console.log("dailyBalances", dailyBalances);

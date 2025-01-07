@@ -26,28 +26,29 @@ import WorkIcon from "@mui/icons-material/Work";
 import SavingsIcon from "@mui/icons-material/Savings";
 import AddBusinessIcon from "@mui/icons-material/AddBusiness";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { ExpenseCategory, IncomeCategory, Transaction } from "../types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Schema, transactionSchema } from "../validation/schema";
+import { AppContext, useAppContext } from "../context/AppContext";
 
 interface TransactionFormProps {
   onCloseForm: () => void;
   isEntryDrawerOpen: boolean;
   currentDay: string;
-  onSaveTransaction: (transaction: Schema) => Promise<void>;
+  // onSaveTransaction: (transaction: Schema) => Promise<void>;
   selectedTransaction: Transaction | null;
-  onDeleteTransaction: (
-    transactionId: string | readonly string[]
-  ) => Promise<void>;
+  // onDeleteTransaction: (
+  //   transactionId: string | readonly string[]
+  // ) => Promise<void>;
   setSelectedTransaction: React.Dispatch<
     React.SetStateAction<Transaction | null>
   >;
-  onUpdateTransaction: (
-    transaction: Schema,
-    transactionId: string
-  ) => Promise<void>;
-  isMobile: boolean;
+  // onUpdateTransaction: (
+  //   transaction: Schema,
+  //   transactionId: string
+  // ) => Promise<void>;
+  // isMobile: boolean;
   isDialogOpen: boolean;
   setIsDialogOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }
@@ -63,17 +64,29 @@ const TransactionForm = ({
   onCloseForm,
   isEntryDrawerOpen,
   currentDay,
-  onSaveTransaction,
+  // onSaveTransaction,
   selectedTransaction,
-  onDeleteTransaction,
+  // onDeleteTransaction,
   setSelectedTransaction,
-  onUpdateTransaction,
-  isMobile,
+  // onUpdateTransaction,
+  // isMobile,
   isDialogOpen,
   setIsDialogOpen,
 }: TransactionFormProps) => {
-  const formWidth = 320;
+  // const context = useContext(AppContext);
+  // if (context) {
+  //   console.log("context.transactions", context.transactions);
+  // }
+  const context = useAppContext();
+  console.log("context", context);
+  console.log("context.transactions", context.transactions);
 
+  const { isMobile } = useAppContext();
+
+  const { onSaveTransaction, onDeleteTransaction, onUpdateTransaction } =
+    useAppContext();
+
+  const formWidth = 320;
   // 支出用カテゴリ
   const expenseCategories: CategoryItem[] = [
     { label: "食費", icon: <FastfoodIcon fontSize="small" /> },

@@ -8,10 +8,46 @@ import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import { Outlet } from "react-router-dom";
 import SideBar from "../common/SideBar";
+import { useAppContext } from "../../context/AppContext";
+import { collection, getDocs } from "firebase/firestore";
+import { db } from "../../firebase";
+import { Transaction } from "../../types";
+import { isFireStoreError } from "../../utils/errorHandling";
 
 const drawerWidth = 240;
 
 export default function AppLayout() {
+  const { setTransactions, setIsLoading } = useAppContext();
+  // firestoreのデータを全て取得
+  React.useEffect(() => {
+    const fetchTransactions = async () => {
+      try {
+        const querySnapshot = await getDocs(collection(db, "Transactions"));
+        const transactionsData = querySnapshot.docs.map((doc) => {
+          // doc.data() is never undefined for query doc snapshots
+          // console.log(doc.id, " => ", doc.data());
+          return {
+            ...doc.data(),
+            id: doc.id,
+          } as Transaction;
+        });
+        // console.log(transactionsData);
+        setTransactions(transactionsData);
+      } catch (err) {
+        if (isFireStoreError(err)) {
+          console.error("FireStoreエラーは: ", err);
+          console.error(err.message);
+          console.error(err.code);
+        } else {
+          console.error("一般的なエラーは: ", err);
+        }
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    fetchTransactions();
+  }, []);
+
   const [mobileOpen, setMobileOpen] = React.useState(false);
   const [isClosing, setIsClosing] = React.useState(false);
 
